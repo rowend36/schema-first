@@ -17,7 +17,7 @@ This project is built on three core pillars:
 1. **Clone the repo:**
 
 ```bash
-git clone https://github.com/reelest/schema-first-spec.git
+git clone https://github.com/rowend36/schema-first-spec.git
 cd schema-first-spec
 
 ```

@@ -32,13 +32,13 @@
     "meta",
     "framework"
   ],
-  "homepage": "https://github.com/reelest/schema-first#readme",
+  "homepage": "https://github.com/rowend36/schema-first#readme",
   "bugs": {
-    "url": "https://github.com/reelest/schema-first/issues"
+    "url": "https://github.com/rowend36/schema-first/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reelest/schema-first.git"
+    "url": "git+https://github.com/rowend36/schema-first.git"
   },
   "license": "Apache-2.0",
   "author": "rowend36",
