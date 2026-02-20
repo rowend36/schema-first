@@ -32,13 +32,13 @@
     "meta",
     "framework"
   ],
-  "homepage": "https://github.com/reelest/admin-one-spec#readme",
+  "homepage": "https://github.com/reelest/schema-first#readme",
   "bugs": {
-    "url": "https://github.com/reelest/admin-one-spec/issues"
+    "url": "https://github.com/reelest/schema-first/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reelest/admin-one-spec.git"
+    "url": "git+https://github.com/reelest/schema-first.git"
   },
   "license": "Apache-2.0",
   "author": "rowend36",
