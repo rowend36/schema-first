@@ -13,6 +13,7 @@ import { getRenderer } from "./registerRenderer";
 import { defaultValidator } from "./validation";
 import { getConventions } from "./config";
 import { APIAction } from "./APIAction";
+import { SORTABLE_FIELDS } from "./defaults";
 const None = {};
 const renderCell: CellRenderer = (props) => {
   return getRenderer(props.spec, "table")(props);
@@ -144,7 +145,7 @@ function getAPIActions() {
 
 export function createSpec<T extends string>(
   e: RawDataSpec<T>,
-  { withFilters = false } = {},
+  { withFilters = !!e.restURL } = {},
 ): DataSpec<T> {
   const {
     actions,
@@ -156,24 +157,25 @@ export function createSpec<T extends string>(
   const filters: ColumnSpec[] = [];
   const columns = (
     Object.entries(e.columns) as Array<[T, RawColumnSpec | ColumnType | null]>
-  ).reduce(
-    (acc, [f, val]) => {
-      if (val === null) return acc;
-      const res = createColumnSpec<T>(val, f);
-      if (res.filterable) {
-        if (typeof val === "string" || !val.filterSpec) {
-          if (withFilters) filters.push(inferFilterType(res));
-        } else if (Array.isArray(val.filterSpec)) {
-          for (const item of val.filterSpec) {
-            filters.push(createColumnSpec(item.type, item.key));
-          }
-        } else filters.push(createColumnSpec(val.filterSpec, f));
-      }
-      acc[f] = res;
-      return acc;
-    },
-    {} as DataSpec<T>["columns"],
-  );
+  ).reduce((acc, [f, val]) => {
+    if (val === null) return acc;
+    const res = createColumnSpec<T>(val, f);
+    if (res.filterable) {
+      if (typeof val === "string" || !val.filterSpec) {
+        if (withFilters) filters.push(inferFilterType(res));
+      } else if (Array.isArray(val.filterSpec)) {
+        for (const item of val.filterSpec) {
+          filters.push(
+            item.type
+              ? createColumnSpec(item.type, item.key)
+              : inferFilterType({ ...res, key: item.key } as ColumnSpec),
+          );
+        }
+      } else filters.push(createColumnSpec(val.filterSpec, f));
+    }
+    acc[f] = res;
+    return acc;
+  }, {} as DataSpec<T>["columns"]);
   const specs = Object.values<ColumnSpec<T>>(columns);
   const pk = specs.find(
     (e) => e.stringType === "pk" || e.numberType === "pk",
@@ -187,13 +189,10 @@ export function createSpec<T extends string>(
       filters.length === 0
         ? undefined
         : {
-            columns: filters.reduce(
-              (acc, res) => {
-                acc[res.key] = res;
-                return acc;
-              },
-              {} as DataSpec["columns"],
-            ),
+            columns: filters.reduce((acc, res) => {
+              acc[res.key] = res;
+              return acc;
+            }, {} as DataSpec["columns"]),
           },
     tableColumns: specs.filter((e) => e.showOnTable).map((e) => e.key),
     icon: e.icon === undefined ? actions.resource.icon : e.icon,
@@ -331,8 +330,7 @@ function createColumnSpec<T extends string>(
   if (listType) {
     listType = createColumnSpec(listType, "item");
   }
-  let rangeType =
-    val.type === "range" ? (val.rangeType ?? "number") : undefined;
+  let rangeType = val.type === "range" ? val.rangeType ?? "number" : undefined;
   if (rangeType) {
     rangeType = createColumnSpec(rangeType, "item");
   }
@@ -340,7 +338,7 @@ function createColumnSpec<T extends string>(
   const completions = val.completions;
   const referenceMode: ColumnSpec["referenceMode"] =
     val.type === "reference"
-      ? (val.referenceMode ??
+      ? val.referenceMode ??
         (!completions
           ? typeof rawReferenceSpec === "function" ||
             // @ts-expect-error We know what we are doing
@@ -349,14 +347,14 @@ function createColumnSpec<T extends string>(
             rawReferenceSpec?.extends?.restURL
             ? "api-relation"
             : "object-relation"
-          : "id-relation"))
+          : "id-relation")
       : undefined!;
   const referenceSpec = rawReferenceSpec
     ? typeof rawReferenceSpec === "function"
       ? rawReferenceSpec
       : "base" in rawReferenceSpec
-        ? loader(rawReferenceSpec)
-        : getter(createSpec(rawReferenceSpec))
+      ? loader(rawReferenceSpec)
+      : getter(createSpec(rawReferenceSpec))
     : undefined!;
   if (val.type === "reference" && !referenceSpec) {
     throw new Error(
@@ -366,10 +364,10 @@ function createColumnSpec<T extends string>(
   const stringType =
     val.type && val.type !== "string"
       ? undefined!
-      : (val.stringType ?? (f === "id" ? "pk" : "text"));
+      : val.stringType ?? (f === "id" ? "pk" : "text");
   const numberType =
     val.type === "number"
-      ? (val.numberType ?? (f === "id" ? "pk" : "integer"))
+      ? val.numberType ?? (f === "id" ? "pk" : "integer")
       : undefined!;
   return {
     key: f,
@@ -378,11 +376,9 @@ function createColumnSpec<T extends string>(
     type: val.type || "string",
     stringType,
     numberType,
-    dateType:
-      val.type === "datetime" ? (val.dateType ?? "datetime") : undefined!,
-    imageType: val.type === "image" ? (val.imageType ?? "banner") : undefined!,
-    boolType:
-      val.type === "boolean" ? (val.boolType ?? "checkbox") : undefined!,
+    dateType: val.type === "datetime" ? val.dateType ?? "datetime" : undefined!,
+    imageType: val.type === "image" ? val.imageType ?? "banner" : undefined!,
+    boolType: val.type === "boolean" ? val.boolType ?? "checkbox" : undefined!,
     listType: listType as ColumnSpec,
     rangeType: rangeType as ColumnSpec,
     referenceMode,
@@ -418,7 +414,12 @@ function createColumnSpec<T extends string>(
       ((val.type === "string" && stringType === "shorttext") ||
         (val.type === "list" && !!listType?.searchable)),
     sortable:
-      val.sortable ?? (SORTABLE_FIELDS.includes(val.type) ? "both" : false),
+      val.sortable ??
+      (SORTABLE_FIELDS.includes(val.type as any) &&
+      !(stringType && SORTABLE_FIELDS.includes(`-${stringType}`)) &&
+      !(numberType && SORTABLE_FIELDS.includes(`-${numberType}`))
+        ? "both"
+        : false),
     renderTable: val.renderTable ?? renderCell,
     renderForm: val.renderForm ?? renderForm,
     renderShow: val.renderShow ?? renderShow,

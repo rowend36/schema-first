@@ -47,7 +47,7 @@ export function createDataAction(
   target.defaultColor = props.defaultColor ?? actions.default.color ?? "";
 
   target.detail = props.detail ?? false;
-  target.reloadMode = (props.reloadMode ?? props.detail) ? "partial" : true;
+  target.reloadMode = props.reloadMode ?? (props.detail ? "partial" : true);
   target.bulk = props.bulk ?? false;
 
   if (target !== props) {

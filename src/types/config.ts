@@ -1,4 +1,4 @@
-import { ColumnType, DataSpec } from ".";
+import { ColumnSpec, ColumnType, DataSpec } from ".";
 import { APIAction } from "../core/APIAction";
 import type {
   IconType,
@@ -31,7 +31,11 @@ export interface SpecConventions {
     error?: string;
   }>;
   loadSpec: (name: ResourceKey) => DataSpec;
-  SORTABLE_FIELDS: ColumnType[];
+  SORTABLE_FIELDS: (
+    | ColumnType
+    | `-${ColumnSpec["stringType"]}`
+    | `-${ColumnSpec["numberType"]}`
+  )[];
   labels: {
     getLabelFromKey: (key: string) => string;
     getLabelFromURL: (label: string | undefined, url: string | null) => string;

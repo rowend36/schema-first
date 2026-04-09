@@ -236,7 +236,7 @@ export interface RawColumnSpec extends RawPermissionSpec {
   options?: Record<string, { label: string; color?: string }>;
   searchable?: boolean;
   filterable?: boolean;
-  filterSpec?: RawColumnSpec | { key: string; type: RawColumnSpec }[];
+  filterSpec?: RawColumnSpec | { key: string; type?: RawColumnSpec }[];
   sortable?: "asc" | "desc" | "both" | false;
   default?: unknown;
   required?: boolean;

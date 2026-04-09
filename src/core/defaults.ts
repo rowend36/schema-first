@@ -1,4 +1,11 @@
-import { ColumnType, DataSpec, ValidPath, ResourceKey } from "../types"; // Adjust based on your file structure
+import {
+  ColumnType,
+  DataSpec,
+  ValidPath,
+  ResourceKey,
+  StringSubTypes,
+  ColumnSpec,
+} from "../types"; // Adjust based on your file structure
 import sentenceCase from "../utils/sentence_case";
 import capitalize from "../utils/capitalize";
 import plural, { singular } from "../utils/plural";
@@ -8,13 +15,11 @@ import { initializeConventions } from "./config";
 export const PRIMARY_COLOR = "#ff7722";
 export const ADD_TRAILING_SLASH = true;
 
-export const SORTABLE_FIELDS: ColumnType[] = [
-  "boolean",
-  "datetime",
-  "string",
-  "number",
-  "reference",
-];
+export const SORTABLE_FIELDS: (
+  | ColumnType
+  | `-${ColumnSpec["stringType"]}`
+  | `-${ColumnSpec["numberType"]}`
+)[] = ["boolean", "datetime", "string", "number", "reference", "-longtext"];
 
 /**
  * SPEC REGISTRY STORAGE
