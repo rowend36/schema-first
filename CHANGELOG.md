@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.3.0
+
+### Minor Changes
+
+- Export getCRUDActions to show default CRUD Actions based on config
+
 ## 0.2.1
 
 ### Patch Changes

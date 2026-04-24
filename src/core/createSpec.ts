@@ -131,7 +131,7 @@ function _getAPIActions() {
 }
 
 const ref = new WeakMap();
-function getAPIActions() {
+export function getCRUDActions() {
   const { actions } = getConventions();
   if (ref.has(actions)) {
     return ref.get(actions);
@@ -150,7 +150,7 @@ export function createSpec<T extends string>(
     actions,
     labels: { getLabelFromURL, getSingularLabelFromURL },
   } = getConventions();
-  const APIActions = getAPIActions();
+  const APIActions = getCRUDActions();
   const pluralLabel = e.pluralLabel ?? getLabelFromURL(e.label, e.restURL);
 
   const filters: ColumnSpec[] = [];
