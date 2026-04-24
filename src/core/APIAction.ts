@@ -141,7 +141,6 @@ export class APIAction<T extends object = any> implements DataAction<T> {
       if (!resolvedURL) {
         resolvedURL = spec?.restURL ?? null;
       }
-      console.log("----->");
       if (this.detail) {
         resolvedURL = getDetailURL(
           resolvedURL!,

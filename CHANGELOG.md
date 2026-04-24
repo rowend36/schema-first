@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.2.0
+
+### Minor Changes
+
+- Add APIAction to exports. It was wrongly excluded before now.
+
 ## 0.1.0
 
 ### Minor Changes

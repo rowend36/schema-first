@@ -23,6 +23,14 @@ export {
 export { createSpec } from "./core/createSpec";
 
 export {
+  APIAction,
+  type PreprocessConfig,
+  SendBodyAPIAction,
+  createDataAction,
+  createPreprocessor,
+} from "./core/APIAction";
+
+export {
   addDefaultConventions,
   auto_pages,
   labels,

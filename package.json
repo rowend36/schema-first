@@ -1,6 +1,6 @@
 {
   "name": "@schema-first/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -22,7 +22,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "dev": "tsup src/index.ts --format cjs,esm --watch --dts",
-    "lint": "tsc",
+    "lint": "tsc && eslint src/",
+    "check": "tsc --noEmit",
     "release": "npm run lint && npm run build && changeset publish",
     "version": "changeset version && npm install"
   },
@@ -49,6 +50,10 @@
     "@changesets/cli": "^2.29.8",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "globals": "^15.0.0",
     "tslib": "^2.8.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"

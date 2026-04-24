@@ -86,7 +86,6 @@ export function inferFilterType(res: ColumnSpec) {
         res.key,
       );
     default:
-      console.log(res);
       throw new Error("No filter type defined for " + res.type);
   }
 }
