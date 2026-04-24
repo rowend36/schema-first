@@ -20,7 +20,7 @@ export {
   HIDDEN_RENDERERS,
 } from "./core/registerRenderer";
 
-export { createSpec, getCRUDActions } from "./core/createSpec";
+export { createSpec, getCRUDActions, getDefaults } from "./core/createSpec";
 
 export {
   APIAction,

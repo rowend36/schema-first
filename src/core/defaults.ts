@@ -3,7 +3,6 @@ import {
   DataSpec,
   ValidPath,
   ResourceKey,
-  StringSubTypes,
   ColumnSpec,
 } from "../types"; // Adjust based on your file structure
 import sentenceCase from "../utils/sentence_case";
@@ -37,7 +36,7 @@ export function loadSpec(name: ResourceKey): DataSpec {
  * URL & PATH LOGIC
  */
 function replacePath(url: string, pathHandler: (url: string) => string) {
-  let [path, params] = url?.split("?") ?? ["", ""];
+  const [path, params] = url?.split("?") ?? ["", ""];
   return (
     pathHandler(path.replace(/\/$/, "")) +
     (ADD_TRAILING_SLASH ? "/" : "") +
@@ -88,6 +87,7 @@ export function getLabelFromURL(
 
 export function getSingularLabelFromURL(
   pluralLabel: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _: ValidPath | null,
 ) {
   return pluralLabel ? singular(pluralLabel) : pluralLabel;

@@ -13,7 +13,6 @@ import { getRenderer } from "./registerRenderer";
 import { defaultValidator } from "./validation";
 import { getConventions } from "./config";
 import { APIAction } from "./APIAction";
-import { SORTABLE_FIELDS } from "./defaults";
 const None = {};
 const renderCell: CellRenderer = (props) => {
   return getRenderer(props.spec, "table")(props);
@@ -100,7 +99,7 @@ function _getAPIActions() {
       icon: actions.create.icon,
       label: actions.create.label,
       defaultColor: actions.create.color,
-      canExecute(user, spec, data) {
+      canExecute(user, spec) {
         return spec.canCreate(user);
       },
     }),
@@ -112,7 +111,7 @@ function _getAPIActions() {
       label: actions.update.label,
       defaultColor: actions.update.color,
       reloadMode: "partial",
-      canExecute(user, spec, data) {
+      canExecute(user, spec) {
         return spec.canUpdate(user);
       },
     }),
@@ -123,7 +122,7 @@ function _getAPIActions() {
       label: actions.delete.label,
       icon: actions.delete.icon,
       defaultColor: actions.delete.color,
-      canExecute(user, spec, data) {
+      canExecute(user, spec) {
         return spec.canDelete(user);
       },
     }),
@@ -131,7 +130,10 @@ function _getAPIActions() {
 }
 
 const ref = new WeakMap();
-export function getCRUDActions() {
+export function getCRUDActions(): Record<
+  "Create" | "Update" | "Delete",
+  APIAction
+> {
   const { actions } = getConventions();
   if (ref.has(actions)) {
     return ref.get(actions);

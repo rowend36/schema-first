@@ -1,5 +1,12 @@
 # @schema-first/core
 
+## 0.3.1
+
+### Patch Changes
+
+- Expose getDefaults function
+- Add types for getCRUDAction
+
 ## 0.3.0
 
 ### Minor Changes

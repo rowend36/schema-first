@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
 /**
  * These types act as the "Fallback" if the user doesn't provide their own.
@@ -19,6 +19,7 @@ export interface DefaultTypeRegistry {
  * This interface is EMPTY by default.
  * TypeScript will look here first.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TypeRegistry {}
 
 /** ==========================================
