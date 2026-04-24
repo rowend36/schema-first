@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.2.1
+
+### Patch Changes
+
+- Fixed issue where 0.2.0 was actually identical to 0.1.0. See 0.2.0 for changes.
+
 ## 0.2.0
 
 ### Minor Changes
