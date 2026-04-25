@@ -11,7 +11,6 @@ import plural, { singular } from "../utils/plural";
 import { ActionConfig, SpecConventions } from "../types/config";
 import { initializeConventions } from "./config";
 
-export const PRIMARY_COLOR = "#ff7722";
 export const ADD_TRAILING_SLASH = true;
 
 export const SORTABLE_FIELDS: (

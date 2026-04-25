@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.3.2
+
+### Patch Changes
+
+- Tightened types for stringType, numberType and dateType
+
 ## 0.3.1
 
 ### Patch Changes

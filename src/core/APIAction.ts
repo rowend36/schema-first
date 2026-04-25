@@ -68,8 +68,8 @@ export function createDataAction(
     props.canExecute && props.canExecute !== hasActionPermissions
       ? props.canExecute
       : props.requiredPermissions && props.requiredPermissions.length
-        ? hasActionPermissions
-        : undefined;
+      ? hasActionPermissions
+      : undefined;
 
   if ("execute" in props && props.execute) {
     target.execute = props.execute;
@@ -167,7 +167,6 @@ export class APIAction<T extends object = any> implements DataAction<T> {
       const res = await fetch(
         url,
         this.method,
-
         spec ? ((await this.getBody(data, spec)) as object) : data,
       );
       return {

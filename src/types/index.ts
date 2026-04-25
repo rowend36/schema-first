@@ -212,15 +212,9 @@ export type RegisteredRenderer = {
 
 export interface RawColumnSpec extends RawPermissionSpec {
   type: ColumnType;
-  stringType?: keyof StringSubTypes | (string & {});
-  numberType?:
-    | "currency"
-    | "integer"
-    | "decimal"
-    | "pk"
-    | "rating"
-    | (string & {});
-  dateType?: "datetime" | "date" | "time" | (string & {});
+  stringType?: keyof StringSubTypes;
+  numberType?: "currency" | "integer" | "decimal" | "pk" | "rating";
+  dateType?: "datetime" | "date" | "time";
   boolType?: "checkbox" | "toggle";
   imageType?: "banner" | "avatar";
 
