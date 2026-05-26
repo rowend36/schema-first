@@ -214,14 +214,15 @@ async function prepareForUpload(data: any, spec: ColumnSpec | DataSpec) {
     }
     return data;
   } else if (spec.type === "list") {
-    return (
-      data &&
-      (
-        await Promise.all(
-          data?.map((e: unknown) => prepareForUpload(e, spec.listType))
-        )
-      ).filter((e) => e != undefined)
+    const results = await Promise.all(
+      data.map((e: unknown) => prepareForUpload(e, spec.listType))
     );
+    if (
+      (spec.listType.type === "image" || spec.listType.type === "file") &&
+      results.every((e) => e === undefined)
+    ) {
+      return undefined;
+    }
   } else {
     return data;
   }
