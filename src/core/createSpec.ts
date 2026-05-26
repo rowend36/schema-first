@@ -44,6 +44,7 @@ export function inferFilterType(res: ColumnSpec) {
         canView: res.canView,
         canUpdate: res.canList,
         showOnForm: true,
+        required: false,
         type: "string",
         options: {
           true: { label: "Yes" },
@@ -57,6 +58,7 @@ export function inferFilterType(res: ColumnSpec) {
         canView: res.canView,
         canUpdate: res.canList,
         showOnForm: true,
+        required: false,
       } as ColumnSpec;
     case "datetime":
     case "number":
@@ -66,13 +68,14 @@ export function inferFilterType(res: ColumnSpec) {
           rangeType: res,
           canView: res.canView,
           canUpdate: res.canList,
+          required: false,
         },
-        res.key,
+        res.key
       );
     case "list":
-      return res.listType;
+      return { ...res.listType, required: false };
     case "range":
-      return res.rangeType;
+      return { ...res.rangeType, required: false };
     case "file":
     case "image":
       return createColumnSpec(
@@ -81,8 +84,9 @@ export function inferFilterType(res: ColumnSpec) {
           canCreate: res.canCreate,
           canView: res.canView,
           label: "Has " + res.label,
+          required: false,
         },
-        res.key,
+        res.key
       );
     default:
       throw new Error("No filter type defined for " + res.type);
@@ -146,7 +150,7 @@ export function getCRUDActions(): Record<
 
 export function createSpec<T extends string>(
   e: RawDataSpec<T>,
-  { withFilters = !!e.restURL } = {},
+  { withFilters = !!e.restURL } = {}
 ): DataSpec<T> {
   const {
     actions,
@@ -169,7 +173,7 @@ export function createSpec<T extends string>(
           filters.push(
             item.type
               ? createColumnSpec(item.type, item.key)
-              : inferFilterType({ ...res, key: item.key } as ColumnSpec),
+              : inferFilterType({ ...res, key: item.key } as ColumnSpec)
           );
         }
       } else filters.push(createColumnSpec(val.filterSpec, f));
@@ -179,7 +183,7 @@ export function createSpec<T extends string>(
   }, {} as DataSpec<T>["columns"]);
   const specs = Object.values<ColumnSpec<T>>(columns);
   const pk = specs.find(
-    (e) => e.stringType === "pk" || e.numberType === "pk",
+    (e) => e.stringType === "pk" || e.numberType === "pk"
   )?.key;
   // if (!pk) {
   //   throw new Error("No primary key found in spec");
@@ -216,7 +220,7 @@ export function createSpec<T extends string>(
 function inferSlots<T extends string>(
   e: RawDataSpec<T>,
   specs: ColumnSpec<T>[],
-  pk: T,
+  pk: T
 ) {
   const usedSlots = e.slots
     ? Object.values(e.slots).concat(e.slots.others ?? [])
@@ -229,7 +233,7 @@ function inferSlots<T extends string>(
           e.showOnView &&
           !usedSlots.includes(e.key) &&
           e.type === "image" &&
-          e.imageType === "avatar",
+          e.imageType === "avatar"
       )?.key,
     content:
       e.slots?.content ??
@@ -238,7 +242,7 @@ function inferSlots<T extends string>(
           e.showOnView &&
           !usedSlots.includes(e.key) &&
           e.type === "string" &&
-          e.stringType === "longtext",
+          e.stringType === "longtext"
       )?.key,
     image:
       e.slots?.image ??
@@ -247,7 +251,7 @@ function inferSlots<T extends string>(
           e.showOnView &&
           !usedSlots.includes(e.key) &&
           e.type === "image" &&
-          e.imageType === "banner",
+          e.imageType === "banner"
       )?.key,
     title:
       e.slots?.title ??
@@ -258,13 +262,13 @@ function inferSlots<T extends string>(
           e.type === "string" &&
           e.stringType !== "longtext" &&
           !e.options &&
-          e.stringType !== "pk",
+          e.stringType !== "pk"
       )?.key,
     timestamp:
       e.slots?.timestamp ??
       specs.find(
         (e) =>
-          e.showOnView && !usedSlots.includes(e.key) && e.type === "datetime",
+          e.showOnView && !usedSlots.includes(e.key) && e.type === "datetime"
       )?.key,
     rating:
       e.slots?.rating ??
@@ -273,7 +277,7 @@ function inferSlots<T extends string>(
           e.showOnView &&
           !usedSlots.includes(e.key) &&
           e.type === "number" &&
-          e.numberType === "rating",
+          e.numberType === "rating"
       )?.key,
 
     ...e.slots,
@@ -285,7 +289,7 @@ function inferSlots<T extends string>(
       specs
         .filter(
           (e) =>
-            e.showOnView && !inferredSlotKeys.includes(e.key) && e.key !== pk,
+            e.showOnView && !inferredSlotKeys.includes(e.key) && e.key !== pk
         )
         .map((e) => e.key),
     ...inferredSlots,
@@ -316,7 +320,7 @@ function loader(spec: DynamicDataSpec) {
 
 function createColumnSpec<T extends string>(
   val: RawColumnSpec | ColumnType,
-  f: T,
+  f: T
 ): ColumnSpec<T> {
   const {
     SORTABLE_FIELDS,
@@ -359,7 +363,7 @@ function createColumnSpec<T extends string>(
     : undefined!;
   if (val.type === "reference" && !referenceSpec) {
     throw new Error(
-      `Reference spec for ${f} is not defined. Please provide a DataSpec or use a number or string field.`,
+      `Reference spec for ${f} is not defined. Please provide a DataSpec or use a number or string field.`
     );
   }
   const stringType =
@@ -428,7 +432,7 @@ function createColumnSpec<T extends string>(
 
     // Permissions
     ...createPermissionSpec(
-      (stringType ?? numberType) === "pk" ? { readOnly: true, ...val } : val,
+      (stringType ?? numberType) === "pk" ? { readOnly: true, ...val } : val
     ),
   };
 }

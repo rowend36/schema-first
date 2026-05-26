@@ -32,7 +32,7 @@ export function createPreprocessor(config: object) {
 
 export function createDataAction(
   props: ConstructorParameters<typeof APIAction>[0],
-  target = null! as DataAction,
+  target = null! as DataAction
 ) {
   const {
     actions,
@@ -107,7 +107,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
       execute?: DataAction<T>["execute"];
       preprocess?: PreprocessConfig;
       method?: APIAction["method"];
-    },
+    }
   ) {
     createDataAction(props as any, this);
     this.action = props.action ?? "";
@@ -128,7 +128,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
     spec: DataSpec | null = null,
     // For more advanced lookups, you can supply the url directly after resolving all lookups
     // The action property would still be used if and only if it is a relative path without lookups
-    resolvedURL: string | null = null,
+    resolvedURL: string | null = null
   ) {
     const {
       fetch,
@@ -144,7 +144,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
       if (this.detail) {
         resolvedURL = getDetailURL(
           resolvedURL!,
-          spec!.columns[spec!.pk].select(data),
+          spec!.columns[spec!.pk].select(data)
         );
       }
       url = resolvedURL
@@ -159,7 +159,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
     if (spec && data && url.includes("{" + spec.urlLookup + "}")) {
       url = url.replace(
         "{" + spec.urlLookup + "}",
-        spec.columns[spec.pk].select(data),
+        spec.columns[spec.pk].select(data)
       );
     }
 
@@ -167,7 +167,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
       const res = await fetch(
         url,
         this.method,
-        spec ? ((await this.getBody(data, spec)) as object) : data,
+        spec ? ((await this.getBody(data, spec)) as object) : data
       );
       return {
         success: res.status == "success",
@@ -202,13 +202,13 @@ async function prepareForUpload(data: any, spec: ColumnSpec | DataSpec) {
       if (i in data) {
         (m || (m = { ...data }))[i] = await prepareForUpload(
           spec.columns[i].select(data),
-          spec.columns[i],
+          spec.columns[i]
         );
       }
     }
     return m ?? data;
   } else if (spec.type === "image" || spec.type === "file") {
-    // File Uploads are strings on the web and objects on mobile
+    // File Uploads are File on the web and objects on mobile
     if (typeof data === "string") {
       return undefined;
     }
@@ -216,9 +216,11 @@ async function prepareForUpload(data: any, spec: ColumnSpec | DataSpec) {
   } else if (spec.type === "list") {
     return (
       data &&
-      (await Promise.all(
-        data?.map((e: unknown) => prepareForUpload(e, spec.listType)),
-      ))
+      (
+        await Promise.all(
+          data?.map((e: unknown) => prepareForUpload(e, spec.listType))
+        )
+      ).filter((e) => e != undefined)
     );
   } else {
     return data;

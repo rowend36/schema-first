@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.3.3
+
+### Patch Changes
+
+- Made filters not required by default and fixed a bug in prepareForUpload that sent lists with undefined.
+
 ## 0.3.2
 
 ### Patch Changes
