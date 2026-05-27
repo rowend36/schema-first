@@ -223,6 +223,7 @@ async function prepareForUpload(data: any, spec: ColumnSpec | DataSpec) {
     ) {
       return undefined;
     }
+    return results;
   } else {
     return data;
   }

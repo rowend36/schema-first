@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.3.4
+
+### Patch Changes
+
+- fix: regression that remove list[image] from payloads
+
 ## 0.3.3
 
 ### Patch Changes
