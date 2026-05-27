@@ -24,7 +24,7 @@ export interface SpecConventions {
   fetch: (
     url: string,
     method: APIAction["method"],
-    body: object | undefined,
+    body: object | undefined
   ) => Promise<{
     status: "success" | "failure";
     data?: any;
@@ -41,14 +41,10 @@ export interface SpecConventions {
     getLabelFromURL: (label: string | undefined, url: string | null) => string;
     getSingularLabelFromURL: (
       pluralLabel: string,
-      path: ValidPath | null,
+      path: ValidPath | null
     ) => string;
   };
-  auto_pages: {
-    getRouteForResource: (spec: DataSpec) => string | null;
-    getPageTitle: (spec: DataSpec) => string;
-    getViewPageTitle: (spec: DataSpec) => string;
-  };
+  prepareForUpload: (data: any, spec: ColumnSpec | DataSpec) => any;
   urls: {
     normalizeURL: (url: string) => string;
     getDetailURL: (url: ValidPath, id: string | number) => string;

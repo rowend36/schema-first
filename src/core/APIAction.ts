@@ -1,13 +1,12 @@
 import type {
-  ColumnSpec,
   DataAction,
   DataSpec,
   IconType,
+  Permission,
   PermissionHolder,
 } from "../types";
-import { hasPermission } from "./permissions";
-import type { Permission } from "../types";
 import { getConventions } from "./config";
+import { hasPermission } from "./permissions";
 /**
  * {
  *  id : "{id}",
@@ -116,7 +115,7 @@ export class APIAction<T extends object = any> implements DataAction<T> {
 
   getBody(data: T, spec: DataSpec): unknown {
     if (this.form || this.preprocess) {
-      return prepareForUpload(data, spec) as Promise<T>;
+      return getConventions().prepareForUpload(data, spec) as Promise<T>;
     }
     return undefined;
   }
@@ -191,40 +190,5 @@ export class SendBodyAPIAction<T extends object = any> extends APIAction<T> {
   constructor(props: ConstructorParameters<typeof APIAction>[0]) {
     if (!("form" in props)) props.form = true;
     super(props);
-  }
-}
-
-async function prepareForUpload(data: any, spec: ColumnSpec | DataSpec) {
-  if (!data) return data;
-  if ("columns" in spec) {
-    let m;
-    for (const i in spec.columns) {
-      if (i in data) {
-        (m || (m = { ...data }))[i] = await prepareForUpload(
-          spec.columns[i].select(data),
-          spec.columns[i]
-        );
-      }
-    }
-    return m ?? data;
-  } else if (spec.type === "image" || spec.type === "file") {
-    // File Uploads are File on the web and objects on mobile
-    if (typeof data === "string") {
-      return undefined;
-    }
-    return data;
-  } else if (spec.type === "list") {
-    const results = await Promise.all(
-      data.map((e: unknown) => prepareForUpload(e, spec.listType))
-    );
-    if (
-      (spec.listType.type === "image" || spec.listType.type === "file") &&
-      results.every((e) => e === undefined)
-    ) {
-      return undefined;
-    }
-    return results;
-  } else {
-    return data;
   }
 }

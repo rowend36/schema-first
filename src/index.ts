@@ -32,8 +32,8 @@ export {
 
 export {
   addDefaultConventions,
-  auto_pages,
   labels,
+  prepareForUpload,
   preloadSpecs,
   loadSpec,
   urls,

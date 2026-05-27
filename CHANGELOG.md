@@ -1,5 +1,11 @@
 # @schema-first/core
 
+## 0.3.5
+
+### Patch Changes
+
+- fix: made prepare for upload configurable and stopped arrays from removing strings images/files
+
 ## 0.3.4
 
 ### Patch Changes

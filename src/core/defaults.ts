@@ -6,7 +6,6 @@ import {
   ColumnSpec,
 } from "../types"; // Adjust based on your file structure
 import sentenceCase from "../utils/sentence_case";
-import capitalize from "../utils/capitalize";
 import plural, { singular } from "../utils/plural";
 import { ActionConfig, SpecConventions } from "../types/config";
 import { initializeConventions } from "./config";
@@ -53,23 +52,12 @@ export const getActionURL = (url: ValidPath, action: string) =>
     ? (action as ValidPath)
     : (replacePath(url as string, (path) => `${path}/${action}`) as ValidPath);
 
-export const getRouteForResource = (spec: DataSpec) =>
-  spec.restURL ? `/admin${spec.restURL}` : null;
-
-export function getPageTitle(spec: DataSpec) {
-  return `Manage ${capitalize(spec.pluralLabel)}`;
-}
-
-export function getViewPageTitle(spec: DataSpec) {
-  return `${capitalize(spec.label)} Details`;
-}
-
 /**
  * LABEL INFERENCE LOGIC
  */
 export function getLabelFromURL(
   label: string | undefined,
-  url: ValidPath | null,
+  url: ValidPath | null
 ): string {
   if (label) return plural(label);
   if (!url) return "";
@@ -87,14 +75,14 @@ export function getLabelFromURL(
 export function getSingularLabelFromURL(
   pluralLabel: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _: ValidPath | null,
+  _: ValidPath | null
 ) {
   return pluralLabel ? singular(pluralLabel) : pluralLabel;
 }
 
 export function getLabelFromKey(key: string) {
   return sentenceCase(
-    key.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^num_|_id$/i, ""),
+    key.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^num_|_id$/i, "")
   ).replace(/[-_]/g, " ");
 }
 
@@ -123,11 +111,37 @@ export const urls: SpecConventions["urls"] = {
   normalizeURL,
 };
 
-export const auto_pages: SpecConventions["auto_pages"] = {
-  getPageTitle,
-  getRouteForResource,
-  getViewPageTitle,
-};
+export async function prepareForUpload(
+  data: any,
+  spec: ColumnSpec | DataSpec,
+  isList = false
+) {
+  if (!data) return data;
+  if ("columns" in spec) {
+    let m;
+    for (const i in spec.columns) {
+      if (i in data) {
+        (m || (m = { ...data }))[i] = await prepareForUpload(
+          spec.columns[i].select(data),
+          spec.columns[i]
+        );
+      }
+    }
+    return m ?? data;
+  } else if (spec.type === "image" || spec.type === "file") {
+    // File Uploads are File on the web and objects on mobile
+    if (typeof data === "string" && !isList) {
+      return undefined;
+    }
+    return data;
+  } else if (spec.type === "list") {
+    return await Promise.all(
+      data.map((e: unknown) => prepareForUpload(e, spec.listType, true))
+    );
+  } else {
+    return data;
+  }
+}
 
 export function addDefaultConventions() {
   initializeConventions({
@@ -151,9 +165,9 @@ export function addDefaultConventions() {
     },
     SORTABLE_FIELDS,
     actions,
-    auto_pages,
     labels,
     loadSpec,
     urls,
+    prepareForUpload,
   });
 }
